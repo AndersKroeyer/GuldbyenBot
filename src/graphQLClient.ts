@@ -1,4 +1,4 @@
 import { GraphQLClient } from 'graphql-request';
 
-export const client: GraphQLClient =
+export const graphClient: GraphQLClient =
     new GraphQLClient('https://www.warcraftlogs.com/api/v2/client')

@@ -1,4 +1,4 @@
-import { client } from './graphQLClient';
+import { graphClient } from './graphQLClient';
 import { gql } from 'graphql-request';
 import { ReportDataReportArgs, Query, ReportEventsArgs, EventDataType, ReportActor } from "./__generated__/graphql-types"
 import { DamageEvent } from './types';
@@ -6,7 +6,7 @@ import { DamageEvent } from './types';
 export const getPulls = async (code: string): Promise<number[]> => {
     const variables: ReportDataReportArgs = { code: code };
 
-    const data = await client.request<Query>(gql`
+    const data = await graphClient.request<Query>(gql`
         query ($code: String) {
             reportData {
                 report(code: $code) {
@@ -30,7 +30,7 @@ export const getZealotEvents = async ({ code, fightId }: getZealotEventsParams):
     const reportArgs: ReportDataReportArgs = { code };
     const eventArgs: ReportEventsArgs = { fightIDs: [fightId], dataType: EventDataType.DamageDone };
     console.log("fetching zealot data from fight ", fightId)
-    const data = await client.request<Query>(gql`
+    const data = await graphClient.request<Query>(gql`
         query ($code: String, $fightIDs: [Int]) {
             reportData {
                 report(code: $code) {
@@ -56,7 +56,7 @@ export const getZealotEvents = async ({ code, fightId }: getZealotEventsParams):
 export const getPlayers = async (code: string): Promise<ReportActor[]> => {
     const variables: ReportDataReportArgs = { code: code };
 
-    const data = await client.request<Query>(gql`
+    const data = await graphClient.request<Query>(gql`
         query ($code: String) {
             reportData {
                 report(code: $code) {
