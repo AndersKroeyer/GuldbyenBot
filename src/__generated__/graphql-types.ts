@@ -1266,7 +1266,7 @@ export type ReportEventsArgs = {
   difficulty?: InputMaybe<Scalars['Int']>;
   encounterID?: InputMaybe<Scalars['Int']>;
   endTime?: InputMaybe<Scalars['Float']>;
-  fightIDs?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  fightIDs: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   filterExpression?: InputMaybe<Scalars['String']>;
   hostilityType?: InputMaybe<HostilityType>;
   includeResources?: InputMaybe<Scalars['Boolean']>;
@@ -1286,7 +1286,7 @@ export type ReportEventsArgs = {
   translate?: InputMaybe<Scalars['Boolean']>;
   useAbilityIDs?: InputMaybe<Scalars['Boolean']>;
   useActorIDs?: InputMaybe<Scalars['Boolean']>;
-  viewOptions: InputMaybe<Scalars['Int']>;
+  viewOptions?: InputMaybe<Scalars['Int']>;
   wipeCutoff?: InputMaybe<Scalars['Int']>;
 };
 
