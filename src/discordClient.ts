@@ -5,7 +5,7 @@ export const discordClient: Client = new Client({ intents: [GatewayIntentBits.Gu
 export const sendMessage = (title: string, message: string) => {
 
     const channel = discordClient.channels.cache.get('1089225613329580302') as any;
-    channel.send("**" + title + "**\n\n" + "```css\n" + message + "```");
+    channel.send("**" + title + "**\n" + "```css\n" + message + "```\n");
 }
 
 
