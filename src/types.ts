@@ -10,4 +10,6 @@ export type DamageEvent = {
     hitType: number;
     amount: number;
     unmitigatedAmount: number;
+    absorbed: number;
 };
+

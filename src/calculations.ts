@@ -1,14 +1,14 @@
 import { DamageEvent } from "./types";
 import { ReportActor } from "./__generated__/graphql-types";
 
-export const combinePlayerAndPetDamage = (actors: ReportActor[], damageEvents: DamageEvent[]) => {
+export const combinePlayerAndPetDamage = (actors: ReportActor[], damageEvents: DamageEvent[], valueSelector: (e: DamageEvent) => number) => {
     const damageMap = new Map<number, number>()
     const getActor = (id) => actors.find((actor) => actor.id === id);
 
     damageEvents.forEach((event) => {
         const damageOwner = getDamageOwner(actors, getActor(event.sourceID));
         const currentDamage = damageMap.get(damageOwner) || 0;
-        damageMap.set(damageOwner, currentDamage + event.amount);
+        damageMap.set(damageOwner, currentDamage + valueSelector(event));
     });
 
     const sortedArray: [string, number][] = Array

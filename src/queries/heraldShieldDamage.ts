@@ -11,7 +11,6 @@ type getHeraldEventsParams = {
     heraldId: number;
 }
 
-
 export const getOneHeraldEvents = async (reportArgs: ReportDataReportArgs, eventArgs: ReportEventsArgs, heraldInstanceId: number): Promise<DamageEvent[]> => {
     eventArgs.targetInstanceID = heraldInstanceId;
     const data = await graphClient.request<Query>(gql`
@@ -32,23 +31,22 @@ export const getOneHeraldEvents = async (reportArgs: ReportDataReportArgs, event
         return [];
     }
 
-    const shieldAmount = 1629000;
+    // const shieldAmount = 1629000;
+    // const earliestEventTimestamp = eventsData[0].timestamp;
+    // const cutoffTimestamp = earliestEventTimestamp + 5500;
+    // const validDamage: DamageEvent[] = []
+    // let damageSoFar: number = 0
+    // eventsData
+    //     .filter(x => x.timestamp >= cutoffTimestamp)
+    //     .forEach(x => {
+    //         if (damageSoFar < shieldAmount) {
+    //             damageSoFar = damageSoFar + x.amount
+    //             validDamage.push(x)
+    //         }
+    //     })
 
-    const earliestEventTimestamp = eventsData[0].timestamp;
-    const cutoffTimestamp = earliestEventTimestamp + 5500;
-    const validDamage: DamageEvent[] = []
-    let damageSoFar: number = 0
-    eventsData
-        .filter(x => x.timestamp >= cutoffTimestamp)
-        .forEach(x => {
-            if (damageSoFar < shieldAmount) {
-                damageSoFar = damageSoFar + x.amount
-                validDamage.push(x)
-            }
-        })
-
-    //Før skjold: 250k, efter skjold 520k  ---- 280k skjold damage
-    return validDamage;
+    //Før skjold: 250k, efter skjold 520k  ---- 280k skjold damage på jadefists?
+    return eventsData.filter(x => x.absorbed != null && x.absorbed > 0);
 }
 
 const getHeraldEvents = async ({ code, fightId, heraldId }: getHeraldEventsParams): Promise<Map<number, DamageEvent[]>> => {
@@ -58,11 +56,7 @@ const getHeraldEvents = async ({ code, fightId, heraldId }: getHeraldEventsParam
     const heraldEventMap = new Map<number, DamageEvent[]>();
     for (var i = 1; i <= 3; i++) {
         heraldEventMap.set(i, (await getOneHeraldEvents(reportArgs, eventArgs, i)))
-        heraldEventMap.set(i, (await getOneHeraldEvents(reportArgs, eventArgs, i)))
-        heraldEventMap.set(i, (await getOneHeraldEvents(reportArgs, eventArgs, i)))
     }
-
-
     return heraldEventMap;
 }
 
@@ -71,17 +65,17 @@ export const sendHeraldEvents = async (reportCode: string, pullId: number, actor
     console.log(events.get(1).length)
     console.log(events.get(2).length)
     console.log(events.get(3).length)
+    const absorbfunc = (e: DamageEvent) => e.absorbed
+    const mappedValues = [
+        combinePlayerAndPetDamage(actors, events.get(1), absorbfunc),
+        combinePlayerAndPetDamage(actors, events.get(2), absorbfunc),
+        combinePlayerAndPetDamage(actors, events.get(3), absorbfunc)
+    ]
 
-    const mappedValues = {
-        1: combinePlayerAndPetDamage(actors, events.get(1)),
-        2: combinePlayerAndPetDamage(actors, events.get(2)),
-        3: combinePlayerAndPetDamage(actors, events.get(3))
+    for (var i = 0; i < 3; i++) {
+        const message = Array.from(mappedValues[i].entries())
+            .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
+            .join('')
+        sendMessage(`[report ${reportCode}, pull ${pullId}] - herald ${i + 1} shield damage`, message)
     }
-
-    // for (var i = 1; i <= 3; i++) {
-    //     const message = Array.from(mappedValues[i].entries())
-    //         .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
-    //         .join('')
-    //     sendMessage(`[report ${reportCode}, pull ${pullId}] - herald ${i} shield damage`, message)
-    // }
 }

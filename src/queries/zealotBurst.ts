@@ -37,7 +37,7 @@ const getZealotEvents = async ({ code, fightId, zealotId }: getZealotEventsParam
 
 export const sendZealotDamage = async (reportCode: string, pullId: number, actors: ReportActor[]) => {
     const zealotEvents = await getZealotEvents({ code: reportCode, fightId: pullId, zealotId: actors.find(x => x.name === "Frostforged Zealot").id })
-    const output = combinePlayerAndPetDamage(actors, zealotEvents);
+    const output = combinePlayerAndPetDamage(actors, zealotEvents, (e) => e.amount);
     const message = Array.from(output.entries())
         .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
         .join('')
