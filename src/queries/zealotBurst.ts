@@ -35,11 +35,12 @@ const getZealotEvents = async ({ code, fightId, zealotId }: getZealotEventsParam
     return data.reportData.report.events.data.filter(x => x.timestamp <= cutoffTimestamp);
 }
 
-export const sendZealotDamage = async (reportCode: string, pullId: number, actors: ReportActor[]) => {
+export const sendZealotDamage = async (reportCode: string, pullId: number, actors: ReportActor[], sendFunction: (title: string, message: string) => void) => {
     const zealotEvents = await getZealotEvents({ code: reportCode, fightId: pullId, zealotId: actors.find(x => x.name === "Frostforged Zealot").id })
     const output = combinePlayerAndPetDamage(actors, zealotEvents, (e) => e.amount);
     const message = Array.from(output.entries())
         .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
         .join('')
-    sendMessage(`[report ${reportCode}, pull ${pullId}] - 10sec burst damage on the second zealot`, message)
+    const title = `[report ${reportCode}, pull ${pullId}] - 10sec burst damage on the second zealot`
+    sendFunction(title, message)
 }

@@ -3,13 +3,6 @@ import { graphClient } from '../graphQLClient';
 import { gql } from 'graphql-request';
 import { DamageEvent } from '../types';
 import { combinePlayerAndPetDamage } from "../calculations";
-import { sendMessage } from "../discordClient";
-
-type getHeraldEventsParams = {
-    code: string;
-    fightId: number;
-    heraldId: number;
-}
 
 export const getOneHeraldEvents = async (reportArgs: ReportDataReportArgs, eventArgs: ReportEventsArgs, heraldInstanceId: number): Promise<DamageEvent[]> => {
     eventArgs.targetInstanceID = heraldInstanceId;
@@ -30,26 +23,10 @@ export const getOneHeraldEvents = async (reportArgs: ReportDataReportArgs, event
     if (eventsData.length == 0) {
         return [];
     }
-
-    // const shieldAmount = 1629000;
-    // const earliestEventTimestamp = eventsData[0].timestamp;
-    // const cutoffTimestamp = earliestEventTimestamp + 5500;
-    // const validDamage: DamageEvent[] = []
-    // let damageSoFar: number = 0
-    // eventsData
-    //     .filter(x => x.timestamp >= cutoffTimestamp)
-    //     .forEach(x => {
-    //         if (damageSoFar < shieldAmount) {
-    //             damageSoFar = damageSoFar + x.amount
-    //             validDamage.push(x)
-    //         }
-    //     })
-
-    //Før skjold: 250k, efter skjold 520k  ---- 280k skjold damage på jadefists?
     return eventsData.filter(x => x.absorbed != null && x.absorbed > 0);
 }
 
-const getHeraldEvents = async ({ code, fightId, heraldId }: getHeraldEventsParams): Promise<Map<number, DamageEvent[]>> => {
+const getHeraldEventMap = async (code, fightId, heraldId): Promise<Map<number, DamageEvent[]>> => {
     const reportArgs: ReportDataReportArgs = { code };
     const eventArgs: ReportEventsArgs = { fightIDs: [fightId], dataType: EventDataType.DamageDone, targetID: heraldId };
 
@@ -60,11 +37,8 @@ const getHeraldEvents = async ({ code, fightId, heraldId }: getHeraldEventsParam
     return heraldEventMap;
 }
 
-export const sendHeraldEvents = async (reportCode: string, pullId: number, actors: ReportActor[]) => {
-    const events = await getHeraldEvents({ code: reportCode, fightId: pullId, heraldId: actors.find(x => x.name === "Flamesworn Herald").id })
-    console.log(events.get(1).length)
-    console.log(events.get(2).length)
-    console.log(events.get(3).length)
+export const sendHeraldEvents = async (reportCode: string, pullId: number, actors: ReportActor[], sendFunction: (title: string, message: string) => void) => {
+    const events = await getHeraldEventMap(reportCode, pullId, actors.find(x => x.name === "Flamesworn Herald").id)
     const absorbfunc = (e: DamageEvent) => e.absorbed
     const mappedValues = [
         combinePlayerAndPetDamage(actors, events.get(1), absorbfunc),
@@ -76,6 +50,7 @@ export const sendHeraldEvents = async (reportCode: string, pullId: number, actor
         const message = Array.from(mappedValues[i].entries())
             .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
             .join('')
-        sendMessage(`[report ${reportCode}, pull ${pullId}] - herald ${i + 1} shield damage`, message)
+        const title = `[report ${reportCode}, pull ${pullId}] - herald ${i + 1} shield damage`
+        sendFunction(title, message)
     }
 }
