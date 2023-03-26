@@ -2,20 +2,22 @@ import { getAccessToken } from "./authClient"
 import * as dotenv from "dotenv";
 import { graphClient } from './graphQLClient';
 import { getActors, getPulls } from "./queries/commonQueries";
-import { discordClient, sendMessage } from "./discordClient"
-import { sendZealotDamage } from "./queries/zealotBurst";
-import { sendHeraldEvents } from "./queries/heraldShieldDamage";
+import { discordClient, sendMessage, updateSlashCommands } from "./discordClient"
 import { AnalysisType, executeAnalysis } from "./analysisCommandOrchestrator";
 
-let previousPullIds: number[] = [];
+let previousPullIds1: number[] = [];
+let previousPullIds2: number[] = [];
 
-const fetchDataAndSend = async (reportId: string, analysisType: AnalysisType) => {
+const fetchDataAndSend = async (reportId: string, analysisType: AnalysisType, oldPulls: number[]) => {
     try {
         console.log("Fetching pulls")
         const pullIds = await getPulls(reportId);
         const players = await getActors(reportId);
 
-        if (previousPullIds.length !== pullIds.length) {
+        if (!pullIds)
+            return;
+
+        if (oldPulls.length !== pullIds.length) {
             const lastPull = pullIds[pullIds.length - 1]
             console.log(`pull ${lastPull} looks new, doing analysis`)
             await executeAnalysis({
@@ -26,9 +28,9 @@ const fetchDataAndSend = async (reportId: string, analysisType: AnalysisType) =>
                 reportId
             })
         } else {
-            console.log(`Poll for new pulls (lol) did not return something new. Old: ${previousPullIds.length} - new ${pullIds.length}`)
+            console.log(`${oldPulls.length} Poll for new pulls (lol) did not return something new. Old: ${oldPulls.length} - new ${pullIds.length}`)
         }
-        previousPullIds = pullIds
+        oldPulls = pullIds
     } catch (e) {
         console.error('Error occurred:', e);
     }
@@ -39,9 +41,11 @@ const fetchDataAndSend = async (reportId: string, analysisType: AnalysisType) =>
     const token = await getAccessToken();
     graphClient.setHeader("authorization", `Bearer ${token}`)
     discordClient.login(process.env.DISCORD_BOT_TOKEN);
-    const reportId = process.env.REPORT_ID;
-    // const reportId2 = process.env.REPORT_ID2;
-    setInterval(() => fetchDataAndSend(reportId, AnalysisType.Herald), 30 * 1000); //Red
-    // setInterval(() => fetchDataAndSend(reportId2, AnalysisType.Zealot), 30 * 1000); //Blue
+    const reportId = "jX9Rt3CrhQPJ6gnV";
+    const reportId2 = "ZDg7dzkTL2x9KPMF";
+    fetchDataAndSend(reportId, AnalysisType.Herald, previousPullIds1)
+    fetchDataAndSend(reportId2, AnalysisType.Zealot, previousPullIds2)
+    //setInterval(() => fetchDataAndSend(reportId, AnalysisType.Herald, previousPullIds1), 30 * 1000); //Red
+    //setInterval(() => fetchDataAndSend(reportId2, AnalysisType.Zealot, previousPullIds2), 30 * 1000); //Blue
 })();
 
