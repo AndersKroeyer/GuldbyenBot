@@ -3,7 +3,6 @@ import { graphClient } from '../graphQLClient';
 import { gql } from 'graphql-request';
 import { DamageEvent } from '../types';
 import { combinePlayerAndPetDamage } from "../calculations";
-import { discordClient, sendMessage } from "../discordClient"
 
 type getZealotEventsParams = {
     code: string;
@@ -38,7 +37,12 @@ const getZealotEvents = async ({ code, fightId, zealotId }: getZealotEventsParam
 export const sendZealotDamage = async (reportCode: string, pullId: number, actors: ReportActor[], sendFunction: (title: string, message: string) => void) => {
     const zealotEvents = await getZealotEvents({ code: reportCode, fightId: pullId, zealotId: actors.find(x => x.name === "Frostforged Zealot").id })
     const output = combinePlayerAndPetDamage(actors, zealotEvents, (e) => e.amount);
-    const message = Array.from(output.entries())
+
+    const entries = Array.from(output.entries())
+    if (entries.length === 0)
+        return
+
+    const message = entries
         .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
         .join('')
     const title = `[report ${reportCode}, pull ${pullId}] - 10sec burst damage on the second zealot`

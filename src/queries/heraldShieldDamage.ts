@@ -47,7 +47,13 @@ export const sendHeraldEvents = async (reportCode: string, pullId: number, actor
     ]
 
     for (var i = 0; i < 3; i++) {
-        const message = Array.from(mappedValues[i].entries())
+        const entries = Array.from(mappedValues[i].entries())
+        if (entries.length === 0) {
+            console.log(`Did not find anything on herald ${i + 1}`)
+            continue
+        }
+
+        const message = entries
             .map(x => `${x[0].padEnd(12, " ")} - ${x[1]} \n`)
             .join('')
         const title = `[report ${reportCode}, pull ${pullId}] - herald ${i + 1} shield damage`

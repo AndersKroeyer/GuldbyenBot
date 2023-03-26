@@ -46,23 +46,30 @@ export const setupCommandListeners = (players: ReportActor[]) => {
     discordClient.login(process.env.DISCORD_BOT_TOKEN);
 }
 
-export const updateSlashCommands = () => {
+export const updateSlashCommands = async () => {
     const data = new SlashCommandBuilder()
-        .setName('analyse')
+        .setName('logs')
         .setDescription('Analyse some warcraft logs')
         .addStringOption(option =>
-            option.setName(CommandInput.AnalysisType)
+            option.setName(CommandInput.AnalysisType.toString())
                 .setDescription('What should the bot look for in the logs?')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'Herald shield damage', value: AnalysisType.Herald },
-                    { name: 'Zealot #2 burst in 10sec', value: AnalysisType.Zealot },
+                    { name: 'Herald shield damage', value: AnalysisType.Herald.toString() },
+                    { name: 'Zealot 2 burst in 10sec', value: AnalysisType.Zealot.toString() },
                 ))
         .addStringOption(option =>
-            option.setName(CommandInput.ReportId)
+            option.setName(CommandInput.ReportId.toString())
                 .setRequired(true)
                 .setDescription('The id of the report. For example when at warcraftlogs.com/reports/XYZ it is the text after the last /'))
         .addNumberOption(option =>
-            option.setName(CommandInput.FightId)
-                .setDescription("The # pull which should be analyzed. For example when at warcraftlogs.com/reports/cG82vMVqXr9DRQNH#fight=36 it is the number 36 which should be used here"))
+            option.setName(CommandInput.FightId.toString())
+                .setDescription("The # pull which should be analyzed"))
+
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_BOT_TOKEN);
+
+    await rest.put(
+        Routes.applicationCommands(process.env.DISCORD_BOT_CLIENT_ID),
+        { body: data },
+    );
 }

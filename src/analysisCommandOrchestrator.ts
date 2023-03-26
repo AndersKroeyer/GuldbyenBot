@@ -25,5 +25,6 @@ export const executeAnalysis = async ({ type, reportId, fightId, actors, message
             break;
         default:
             const msg = `Error when evaluating analysis type ${type}.`
+            console.log(msg)
     }
 }
