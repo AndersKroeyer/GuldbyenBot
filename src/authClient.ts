@@ -1,7 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
 
-
 export async function getAccessToken(): Promise<string | null> {
   try {
     const clientSecret = process.env.CLIENT_SECRET as string;
@@ -19,7 +18,7 @@ export async function getAccessToken(): Promise<string | null> {
           username: clientId,
           password: clientSecret,
         },
-      }
+      },
     );
 
     if (response.data && response.data.access_token) {
@@ -33,5 +32,3 @@ export async function getAccessToken(): Promise<string | null> {
     return null;
   }
 }
-
-
