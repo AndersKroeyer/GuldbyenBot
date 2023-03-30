@@ -35,6 +35,9 @@ const fetchDataAndSend = async (
         fightId: lastPull,
         reportId,
       });
+
+      if (!analysisResult) return;
+
       const reply = analysisResult
         .map((x) => buildMessage(x.title, x.message))
         .join('\n');
@@ -57,22 +60,22 @@ const fetchDataAndSend = async (
 
   await setupCommandListeners();
   discordClient.login(process.env.DISCORD_BOT_TOKEN);
-  const heraldReport = 'jX9Rt3CrhQPJ6gnV';
-  const zealotReport = 'ZDg7dzkTL2x9KPMF';
+  const heraldReport = 'g8fcw6ZhrTvRd7aB';
+  const zealotReport = 'Q6rwtLhWYjZHcB3J';
 
-  setInterval(async () => {
-    previousPullIds1 = await fetchDataAndSend(
-      heraldReport,
-      AnalysisType.Herald,
-      previousPullIds1,
-    );
-  }, 30 * 1000);
+  // setInterval(async () => {
+  //   previousPullIds1 = await fetchDataAndSend(
+  //     heraldReport,
+  //     AnalysisType.Herald,
+  //     previousPullIds1,
+  //   );
+  // }, 30 * 1000);
 
-  setInterval(async () => {
-    previousPullIds2 = await fetchDataAndSend(
-      zealotReport,
-      AnalysisType.Zealot,
-      previousPullIds2,
-    );
-  }, 30 * 1000);
+  // setInterval(async () => {
+  //   previousPullIds2 = await fetchDataAndSend(
+  //     zealotReport,
+  //     AnalysisType.Zealot,
+  //     previousPullIds2,
+  //   );
+  // }, 30 * 1000);
 })();
