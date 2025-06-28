@@ -1,5 +1,5 @@
 import { DamageEvent } from './types';
-import { ReportActor } from './__generated__/graphql-types';
+import { ReportActor } from '../__generated__/graphql-types';
 
 export const combinePlayerAndPetDamage = (
   actors: ReportActor[],

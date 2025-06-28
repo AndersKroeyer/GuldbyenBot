@@ -3,8 +3,8 @@ import qs from 'qs';
 
 export async function getAccessToken(): Promise<string | null> {
   try {
-    const clientSecret = process.env.CLIENT_SECRET as string;
-    const clientId = process.env.CLIENT_ID as string;
+    const clientSecret = process.env.WARCRAFT_LOGS_CLIENT_SECRET as string;
+    const clientId = process.env.WARCRAFT_LOGS_CLIENT_ID as string;
     const response = await axios.post(
       'https://www.warcraftlogs.com/oauth/token',
       qs.stringify({

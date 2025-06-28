@@ -1,4 +1,4 @@
-import { graphClient } from '../graphQLClient';
+import { graphClient } from '../../warcraftLogs/graphQLClient';
 import { gql } from 'graphql-request';
 import {
   ReportDataReportArgs,
@@ -6,7 +6,7 @@ import {
   ReportEventsArgs,
   EventDataType,
   ReportActor,
-} from '../__generated__/graphql-types';
+} from '../../__generated__/graphql-types';
 
 export const getPulls = async (code: string): Promise<number[]> => {
   const variables: ReportDataReportArgs = { code: code };

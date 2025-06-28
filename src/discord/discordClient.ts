@@ -7,8 +7,8 @@ import {
   MessagePayload,
   SlashCommandBuilder,
 } from 'discord.js';
-import { AnalysisType, executeAnalysis } from './analysisCommandOrchestrator';
-import { getActors } from './queries/commonQueries';
+import { AnalysisType, executeAnalysis } from '../bossAnalysis/analysisCommandOrchestrator';
+import { getActors } from '../bossAnalysis/queries/commonQueries';
 
 enum CommandInput {
   AnalysisType = 'analysis_type',

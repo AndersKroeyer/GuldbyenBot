@@ -9,7 +9,7 @@ import { graphClient } from '../graphQLClient';
 import { gql } from 'graphql-request';
 import { DamageEvent } from '../types';
 import { combinePlayerAndPetDamage } from '../calculations';
-import { AnalysisResultMessage } from 'src/analysisCommandOrchestrator';
+import { AnalysisResultMessage } from 'src/bossAnalysis/analysisCommandOrchestrator';
 
 export const getOneHeraldEvents = async (
   reportArgs: ReportDataReportArgs,

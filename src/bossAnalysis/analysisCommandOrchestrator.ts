@@ -1,6 +1,6 @@
 import { sendHeraldEvents } from './queries/heraldShieldDamage';
 import { sendZealotDamage } from './queries/zealotBurst';
-import { ReportActor } from './__generated__/graphql-types';
+import { ReportActor } from '../__generated__/graphql-types';
 
 export enum AnalysisType {
   Herald = 'herald',
