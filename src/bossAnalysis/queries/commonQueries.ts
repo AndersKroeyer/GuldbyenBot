@@ -3,8 +3,6 @@ import { gql } from 'graphql-request';
 import {
   ReportDataReportArgs,
   Query,
-  ReportEventsArgs,
-  EventDataType,
   ReportActor,
 } from '../../__generated__/graphql-types';
 

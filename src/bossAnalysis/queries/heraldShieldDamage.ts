@@ -4,12 +4,12 @@ import {
   ReportEventsArgs,
   EventDataType,
   ReportActor,
-} from '../__generated__/graphql-types';
-import { graphClient } from '../graphQLClient';
+} from '../../__generated__/graphql-types';
 import { gql } from 'graphql-request';
 import { DamageEvent } from '../types';
 import { combinePlayerAndPetDamage } from '../calculations';
-import { AnalysisResultMessage } from 'src/bossAnalysis/analysisCommandOrchestrator';
+import { AnalysisResultMessage } from '../../bossAnalysis/analysisCommandOrchestrator';
+import { graphClient } from '../../warcraftLogs/graphQLClient';
 
 export const getOneHeraldEvents = async (
   reportArgs: ReportDataReportArgs,

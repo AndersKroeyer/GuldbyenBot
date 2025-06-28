@@ -3,13 +3,13 @@ import * as dotenv from 'dotenv';
 import { graphClient } from '../warcraftLogs/graphQLClient';
 import { getActors, getPulls } from './queries/commonQueries';
 import {
-  buildMessage,
   discordClient,
   sendChannelMessage,
   setupCommandListeners,
   updateSlashCommands,
 } from '../discord/discordClient';
 import { AnalysisType, executeAnalysis } from './analysisCommandOrchestrator';
+import { buildDiscordMessage } from './buildAnalysisDiscordMessage';
 
 let previousPullIds1: number[] = [];
 let previousPullIds2: number[] = [];
@@ -38,10 +38,10 @@ const fetchDataAndSend = async (
 
       if (!analysisResult) return;
 
-      const reply = analysisResult
-        .map((x) => buildMessage(x.title, x.message))
-        .join('\n');
-      sendChannelMessage(reply);
+      // const reply = analysisResult
+      //   .map((x) => buildDiscordMessage(x.title, x.message, AnalysisType.Herald))
+      //   .join('\n');
+      // sendChannelMessage(reply);
     } else {
       console.log(
         `${oldPulls.length} Poll for new pulls (lol) did not return something new. Old: ${oldPulls.length} - new ${pullIds.length}`,

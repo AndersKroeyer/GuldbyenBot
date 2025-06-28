@@ -16,7 +16,7 @@ const config: CodegenConfig = {
     ignoreNoDocuments: true,
     config: {
         headers: {
-            Authorization: `Bearer ${process.env.API_TOKEN}`,
+            Authorization: `Bearer ${process.env.WARCRAFT_LOGS_API_TOKEN}`,
         },
         avoidOptionals: true
     },
