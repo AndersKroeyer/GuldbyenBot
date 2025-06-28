@@ -173,21 +173,6 @@ export class WowUtilsCookieApiClient {
   }
 
   /**
-   * Clear all cookies
-   */
-  async clearCookies(): Promise<void> {
-    this.jar = new CookieJar();
-    this.client = wrapper(axios.create({ jar: this.jar }));
-    
-    try {
-      await fs.unlink(this.cookieFile);
-      console.log('Cookies cleared');
-    } catch (error) {
-      // File doesn't exist, that's fine
-    }
-  }
-
-  /**
    * Check if we have authentication cookies
    */
   async hasAuthCookies(): Promise<boolean> {
