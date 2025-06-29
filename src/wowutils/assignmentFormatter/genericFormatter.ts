@@ -14,6 +14,7 @@ export interface MarkdownGeneratorOptions {
   usePlayerColors?: boolean;
   images: string[];
   mechanicBlockConfig: Record<string, BlockFormatConfig>;
+  mechanicOrder?: string[]; // Add this line
 }
 
 /**
@@ -23,6 +24,7 @@ const DEFAULT_OPTIONS: Required<MarkdownGeneratorOptions> = {
   usePlayerColors: false,
   images: [],
   mechanicBlockConfig: {},
+  mechanicOrder: [], // Default to empty array if not provided
 };
 
 /**
@@ -39,7 +41,13 @@ export function generateAssignmentMarkdown(
   }
 
   if (assignment.blocks.length > 0) {
-    var assignments = generateAssignmentBlocks(assignment.blocks, config);
+    var assignments = generateAssignmentBlocks(
+      assignment.blocks,
+      config,
+      config.mechanicOrder && config.mechanicOrder.length > 0
+        ? config.mechanicOrder
+        : undefined
+    );
 
     if (config.images && config.images.length > 0) {
       for (const img of config.images) assignments += `\n[Image](${img})`;
@@ -57,12 +65,23 @@ export function generateAssignmentMarkdown(
 function generateAssignmentBlocks(
   blocks: AssignmentBlock[],
   config: Required<MarkdownGeneratorOptions>,
+  mechanicOrder?: string[],
 ): string {
   const sections: string[] = [];
-
   const groupedBlocks = groupBlocksByMechanic(blocks);
 
-  for (const [mechanic, mechanicBlocks] of Object.entries(groupedBlocks)) {
+  // Determine order of mechanics
+  let mechanics = Object.keys(groupedBlocks);
+  if (mechanicOrder && mechanicOrder.length > 0) {
+    // Use the provided order, and append any missing mechanics at the end
+    mechanics = [
+      ...mechanicOrder.filter((m) => mechanics.includes(m)),
+      ...mechanics.filter((m) => !mechanicOrder.includes(m)),
+    ];
+  }
+
+  for (const mechanic of mechanics) {
+    const mechanicBlocks = groupedBlocks[mechanic];
     var mechanicDisplayName = formatBlockName(
       mechanic,
       config.mechanicBlockConfig,
