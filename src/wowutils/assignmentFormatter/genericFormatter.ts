@@ -14,7 +14,7 @@ export interface MarkdownGeneratorOptions {
   usePlayerColors?: boolean;
   images: string[];
   mechanicBlockConfig: Record<string, BlockFormatConfig>;
-  mechanicOrder?: string[]; // Add this line
+  mechanicOrder?: string[];
 }
 
 /**
@@ -24,7 +24,7 @@ const DEFAULT_OPTIONS: Required<MarkdownGeneratorOptions> = {
   usePlayerColors: false,
   images: [],
   mechanicBlockConfig: {},
-  mechanicOrder: [], // Default to empty array if not provided
+  mechanicOrder: [],
 };
 
 /**
@@ -46,7 +46,7 @@ export function generateAssignmentMarkdown(
       config,
       config.mechanicOrder && config.mechanicOrder.length > 0
         ? config.mechanicOrder
-        : undefined
+        : undefined,
     );
 
     if (config.images && config.images.length > 0) {
