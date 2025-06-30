@@ -40,6 +40,18 @@ export const sendChannelMessage = (message: string) => {
 export const setupCommandListeners = () => {
   discordClient.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
+    
+    const member = await interaction.guild?.members.fetch(interaction.user.id);
+    const hasOfficerRole = member?.roles.cache.some(
+      (role) => role.name.toLowerCase() === "officer"
+    );
+    if(!hasOfficerRole) {
+      await interaction.reply({
+        content: "You do not have permission to use this command.",
+        ephemeral: true,
+      });
+      return;
+    }
 
     if (interaction.commandName === CommandName.Logs) {
       await interaction.deferReply();
