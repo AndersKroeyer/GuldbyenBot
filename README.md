@@ -1,4 +1,4 @@
-# instant-feedback
+# Getting started
 
 Create a .env file
 
