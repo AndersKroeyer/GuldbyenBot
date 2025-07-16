@@ -1,7 +1,10 @@
 import { CreateGallywixMessage } from './assignmentFormatter/gallywix';
 import { WowUtilsCookieApiClient } from './wowUtilsCookieApiClient';
-import { SupportedBoss as SupportedBoss } from './supportedBoss';
 import { RaidAssignment } from './types';
+
+export enum SupportedBoss {
+  Gallywix = 'gallywix',
+}
 
 export type BossAssignmentParams = {
   boss: SupportedBoss;

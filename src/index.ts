@@ -2,7 +2,6 @@ import { WowUtilsCookieApiClient } from './wowutils/wowUtilsCookieApiClient';
 import * as dotenv from 'dotenv';
 import { RaidAssignment } from './wowutils/types';
 import { getBossAssignments } from './wowutils/bossAssignmentDiscordMessageService';
-import { SupportedBoss } from './wowutils/supportedBoss';
 import {
   discordClient,
   sendChannelMessage,

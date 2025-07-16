@@ -66,8 +66,10 @@ export const processFarmSetup = async (): Promise<FarmSetupResult> => {
       const data = await client.get<ApiCooldownsResponse>(
         `/viserio-cooldowns/api/export/assignments/${assignmentRef}`,
       );
-      note += data.note;
+      note += data.note; 
     }
+ 
+    note = note.replaceAll("\n", "\\n")
 
     bossSetups[boss] = {
       raidersIn,
