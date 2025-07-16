@@ -118,3 +118,71 @@ export interface RaidAssignmentList {
   page?: number;
   limit?: number;
 }
+
+// Player info (already similar to RosterMember, but includes realm)
+export interface ApiPlayer {
+  name: string;
+  realm: string;
+  playerClass: string;
+  playerSpec: string;
+  hexColor: string;
+}
+
+// Spec info
+export interface ApiSpec {
+  name: string;
+}
+
+// Boss assignment entry
+export interface BossAssignmentEntry {
+  player: ApiPlayer;
+  spec: ApiSpec;
+  note: string;
+}
+
+// Boss assignments: boss slug -> array of assignments
+export type BossAssignments = Record<string, BossAssignmentEntry[]>;
+
+// Active status: player slug -> boolean
+export type ActiveStatus = Record<string, boolean>;
+
+// Boss status: boss slug -> boolean
+export type BossStatus = Record<string, boolean>;
+
+// Roster entry (same as ApiPlayer)
+export type ApiRosterEntry = ApiPlayer;
+
+// Boss cooldown note refs: boss slug -> string
+export type BossCooldownNoteRefs = Record<string, string>;
+
+// Boss assignment refs: boss slug -> string
+export type BossAssignmentRefs = Record<string, string>;
+
+// Setup object
+export interface ApiSetup {
+  id: number;
+  name: string;
+  bossAssignments: BossAssignments;
+  activeStatus: ActiveStatus;
+  bossStatus: BossStatus;
+  roster: ApiRosterEntry[];
+  difficulty: string;
+  bossCooldownNoteRefs: BossCooldownNoteRefs;
+  bossAssignmentRefs: BossAssignmentRefs;
+}
+
+// Data object
+export interface ApiData {
+  setups: ApiSetup[];
+}
+
+// Root API response
+export interface ApiAssignmentResponse {
+  _id: string;
+  groupId: string;
+  creatorId: string;
+  name: string;
+  data: ApiData;
+  createdAt: string;
+  updatedAt: string;
+}

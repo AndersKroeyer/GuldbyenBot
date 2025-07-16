@@ -9,7 +9,7 @@ import {
 import { buildDiscordMessage } from '../bossAnalysis/buildAnalysisDiscordMessage';
 import { AnalysisType } from '../bossAnalysis/analysisCommandOrchestrator';
 import { SupportedBoss } from '../wowutils/supportedBoss';
-import { getBossAssignments } from '../wowutils/bossAssignmentOrchestrator';
+import { getBossAssignments } from '../wowutils/bossAssignmentDiscordMessageService';
 
 enum LogsCommandInput {
   AnalysisType = 'analysis_type',
