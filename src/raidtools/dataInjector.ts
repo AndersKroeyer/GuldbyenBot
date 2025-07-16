@@ -1,4 +1,4 @@
-import { FarmSetupResult } from "src/wowutils/reclearSetup";
+import { FarmSetupResult } from "src/wowutils/farmHelper";
 import * as fs from "fs/promises";
 
 /**

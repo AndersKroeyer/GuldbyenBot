@@ -1,11 +1,20 @@
-import { ApiAssignmentResponse, ApiPlayer } from './types';
+import {
+  ApiAssignmentResponse,
+  ApiCooldownsResponse,
+  ApiPlayer,
+} from './types';
 import { WowUtilsCookieApiClient } from './wowUtilsCookieApiClient';
-import { RosterMember } from './types';
+
+export interface BossSetup {
+  raidersIn: string[];
+  raidersOut: string[];
+  note: string;
+}
 
 export interface FarmSetupResult {
   bench: string[];
   raiders: string[];
-  bossSetups: Record<string, { raidersIn: string[]; raidersOut: string[] }>;
+  bossSetups: Record<string, BossSetup>;
 }
 
 export const processFarmSetup = async (): Promise<FarmSetupResult> => {
@@ -30,10 +39,7 @@ export const processFarmSetup = async (): Promise<FarmSetupResult> => {
     true,
   );
 
-  const bossSetups: Record<
-    string,
-    { raidersIn: string[]; raidersOut: string[] }
-  > = {};
+  const bossSetups: Record<string, BossSetup> = {};
 
   for (const boss of Object.keys(setup.bossAssignments)) {
     const assignments = setup.bossAssignments[boss] ?? [];
@@ -43,12 +49,30 @@ export const processFarmSetup = async (): Promise<FarmSetupResult> => {
       new Set(assignments.map((entry) => entry.player.name)),
     );
 
-    const raidersOut = raiders.filter(
-      (name) => !raidersIn.includes(name),
-    );
+    const raidersOut = raiders.filter((name) => !raidersIn.includes(name));
+
+    var note = '';
+    
+    var healCdsRef = setup.bossCooldownNoteRefs[boss];
+    if (healCdsRef) {
+      const data = await client.get<ApiCooldownsResponse>(
+        `/viserio-cooldowns/api/export/cooldowns/${healCdsRef}`,
+      );
+      note = data.note;
+    }
+
+    var assignmentRef = setup.bossAssignmentRefs[boss];
+    if (assignmentRef) {
+      const data = await client.get<ApiCooldownsResponse>(
+        `/viserio-cooldowns/api/export/assignments/${assignmentRef}`,
+      );
+      note += data.note;
+    }
+
     bossSetups[boss] = {
       raidersIn,
       raidersOut,
+      note,
     };
   }
 

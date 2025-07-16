@@ -186,3 +186,10 @@ export interface ApiAssignmentResponse {
   createdAt: string;
   updatedAt: string;
 }
+
+// Healer cooldowns response
+export interface ApiCooldownsResponse { 
+  _id: string;
+  note: string;
+  updatedAt: string;
+}

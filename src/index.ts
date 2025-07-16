@@ -9,15 +9,15 @@ import {
   setupCommandListeners,
   updateSlashCommands,
 } from './discord/discordClient';
-import { processFarmSetup } from './wowutils/reclearSetup';
+import { processFarmSetup } from './wowutils/farmHelper';
 import { injectDataIntoAddon } from './raidtools/dataInjector';
 
 (async () => {
   dotenv.config();
 
   const args = process.argv.slice(2);
- 
-   if (args.includes('--farm')) {
+
+  if (args.includes('--farm')) {
     var farmSetup = await processFarmSetup();
     await injectDataIntoAddon(farmSetup);
     process.exit(0);
@@ -26,12 +26,11 @@ import { injectDataIntoAddon } from './raidtools/dataInjector';
   // Set fresh cookies from browser if needed
   //await client.setCookiesFromBrowser('__Host-next-auth.csr......
 
-   //var msg = await getBossAssignments({ boss: SupportedBoss.Gallywix });
-   //console.log(msg)
+  //var msg = await getBossAssignments({ boss: SupportedBoss.Gallywix });
+  //console.log(msg)
 
-   //await updateSlashCommands();
+  //await updateSlashCommands();
 
-   await setupCommandListeners();
-   discordClient.login(process.env.DISCORD_BOT_TOKEN);
-
+  await setupCommandListeners();
+  discordClient.login(process.env.DISCORD_BOT_TOKEN);
 })();
