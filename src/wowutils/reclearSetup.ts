@@ -1,5 +1,6 @@
-import { ApiAssignmentResponse } from './types';
+import { ApiAssignmentResponse, ApiPlayer } from './types';
 import { WowUtilsCookieApiClient } from './wowUtilsCookieApiClient';
+import { RosterMember } from './types';
 
 export interface FarmSetupResult {
   bench: string[];
@@ -8,22 +9,22 @@ export interface FarmSetupResult {
 }
 
 export const processFarmSetup = async (): Promise<FarmSetupResult> => {
-  var client = new WowUtilsCookieApiClient();
+  const client = new WowUtilsCookieApiClient();
   await client.loadCookies();
 
-  var resetId = '67ec57dd22f2dcd7008b94d8';
+  const resetId = '67ec57dd22f2dcd7008b94d8';
 
-  var data = await client.get<ApiAssignmentResponse>(
+  const data = await client.get<ApiAssignmentResponse>(
     `/viserio-cooldowns/api/resets/${resetId}/get`,
   );
-  var setup = data.data.setups[0];
+  const setup = data.data.setups[0];
 
-  const benchedPlayers = getPlayersByActiveStatus(
+  const bench = getPlayersByActiveStatus(
     setup.roster,
     setup.activeStatus,
     false,
   );
-  const nonBenchedPlayers = getPlayersByActiveStatus(
+  const raiders = getPlayersByActiveStatus(
     setup.roster,
     setup.activeStatus,
     true,
@@ -36,10 +37,13 @@ export const processFarmSetup = async (): Promise<FarmSetupResult> => {
 
   for (const boss of Object.keys(setup.bossAssignments)) {
     const assignments = setup.bossAssignments[boss] ?? [];
+
+    // Data contains duplicates for some reason :madge:
     const raidersIn = Array.from(
       new Set(assignments.map((entry) => entry.player.name)),
     );
-    const raidersOut = nonBenchedPlayers.filter(
+
+    const raidersOut = raiders.filter(
       (name) => !raidersIn.includes(name),
     );
     bossSetups[boss] = {
@@ -49,14 +53,14 @@ export const processFarmSetup = async (): Promise<FarmSetupResult> => {
   }
 
   return {
-    bench: benchedPlayers,
-    raiders: nonBenchedPlayers,
+    bench,
+    raiders,
     bossSetups,
   };
 };
 
 function getPlayersByActiveStatus(
-  roster: { name: string }[],
+  roster: ApiPlayer[],
   activeStatus: Record<string, boolean>,
   isActive: boolean,
 ): string[] {

@@ -10,6 +10,7 @@ import {
   updateSlashCommands,
 } from './discord/discordClient';
 import { processFarmSetup } from './wowutils/reclearSetup';
+import { injectDataIntoAddon } from './raidtools/dataInjector';
 
 (async () => {
   dotenv.config();
@@ -18,8 +19,7 @@ import { processFarmSetup } from './wowutils/reclearSetup';
  
    if (args.includes('--farm')) {
     var farmSetup = await processFarmSetup();
-    console.log('Farm setup:', farmSetup);
-    console.log(farmSetup.bossSetups["rik-reverb"]);
+    await injectDataIntoAddon(farmSetup);
     process.exit(0);
   }
 
@@ -31,7 +31,7 @@ import { processFarmSetup } from './wowutils/reclearSetup';
 
    //await updateSlashCommands();
 
-   //await setupCommandListeners();
-   //discordClient.login(process.env.DISCORD_BOT_TOKEN);
+   await setupCommandListeners();
+   discordClient.login(process.env.DISCORD_BOT_TOKEN);
 
 })();
